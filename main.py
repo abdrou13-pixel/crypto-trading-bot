@@ -4,8 +4,8 @@ from ta.momentum import RSIIndicator
 from ta.trend import SMAIndicator
 from binance.client import Client
 
-API_KEY = (os.getenv("BINANCE_API_KEY") or ""SQsCSkgq9cWG4LegcWWFyy4EJJ6OCupvAdPy0Rf8m9PBKiVjK8TuAeVw9NCFjUHm"").strip()
-API_SECRET = (os.getenv("BINANCE_API_SECRET") or ""aUzQZ6QXyoabLLWoRwK0pormrcf5xJljYZOp9j8mDrFZOcoH5d6SSWHMpVtEJv4O"").strip()
+API_KEY = (os.getenv("BINANCE_API_KEY") or "SQsCSkgq9cWG4LegcWWFyy4EJJ6OCupvAdPy0Rf8m9PBKiVjK8TuAeVw9NCFjUHm").strip()
+API_SECRET = (os.getenv("BINANCE_API_SECRET") or "aUzQZ6QXyoabLLWoRwK0pormrcf5xJljYZOp9j8mDrFZOcoH5d6SSWHMpVtEJv4O").strip()
 TESTNET = (os.getenv("BINANCE_TESTNET", "true").strip().lower() == "true")
 
 client = Client(API_KEY, API_SECRET, testnet=TESTNET)
