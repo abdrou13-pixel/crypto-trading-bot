@@ -1,1 +1,5 @@
-
+python-binance
+pandas
+requests
+ta
+psycopg2-binary
