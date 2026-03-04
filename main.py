@@ -1,32 +1,39 @@
 import os
+import pandas as pd
+from ta.momentum import RSIIndicator
+from ta.trend import SMAIndicator
 from binance.client import Client
 
-API_KEY = os.getenv("BINANCE_API_KEY", "SQsCSkgq9cWG4LegcWWFyy4EJJ6OCupvAdPy0Rf8m9PBKiVjK8TuAeVw9NCFjUHm")
-API_SECRET = os.getenv("BINANCE_API_SECRET", "aUzQZ6QXyoabLLWoRwK0pormrcf5xJljYZOp9j8mDrFZOcoH5d6SSWHMpVtEJv4O")
-TESTNET = os.getenv("BINANCE_TESTNET", "true").lower() == "true"
+API_KEY = (os.getenv("BINANCE_API_KEY") or ""SQsCSkgq9cWG4LegcWWFyy4EJJ6OCupvAdPy0Rf8m9PBKiVjK8TuAeVw9NCFjUHm"").strip()
+API_SECRET = (os.getenv("BINANCE_API_SECRET") or ""aUzQZ6QXyoabLLWoRwK0pormrcf5xJljYZOp9j8mDrFZOcoH5d6SSWHMpVtEJv4O"").strip()
+TESTNET = (os.getenv("BINANCE_TESTNET", "true").strip().lower() == "true")
 
-if not API_KEY or not API_SECRET:
-    raise SystemExit("Missing BINANCE_API_KEY / BINANCE_API_SECRET in env vars")
+client = Client(API_KEY, API_SECRET, testnet=TESTNET)
 
-client = Client(API_KEY, API_SECRET)
+SYMBOLS = ["BTCUSDT", "DOGEUSDT", "SOLUSDT"]
+INTERVAL = Client.KLINE_INTERVAL_1HOUR
+LIMIT = 200  # كافي لـ MA50 و RSI
 
-# Spot Testnet endpoint
-if TESTNET:
-    client.API_URL = "https://testnet.binance.vision/api"
+def fetch_klines(symbol: str) -> pd.DataFrame:
+    klines = client.get_klines(symbol=symbol, interval=INTERVAL, limit=LIMIT)
+    df = pd.DataFrame(klines, columns=[
+        "open_time","open","high","low","close","volume",
+        "close_time","qav","trades","tbbav","tbqav","ignore"
+    ])
+    df["close"] = df["close"].astype(float)
+    return df
 
-# 1) Ping
-print("Ping:", client.ping())
+def indicators(df: pd.DataFrame):
+    close = df["close"]
+    rsi = RSIIndicator(close, window=14).rsi().iloc[-1]
+    ma20 = SMAIndicator(close, window=20).sma_indicator().iloc[-1]
+    ma50 = SMAIndicator(close, window=50).sma_indicator().iloc[-1]
+    last = close.iloc[-1]
+    return last, rsi, ma20, ma50
 
-# 2) Server time
-print("Server time:", client.get_server_time())
-
-# 3) Account balances (show only non-zero)
-acct = client.get_account()
-balances = [(b["asset"], b["free"], b["locked"]) for b in acct["balances"]
-            if float(b["free"]) > 0 or float(b["locked"]) > 0]
-print("Non-zero balances:", balances)
-
-# 4) Get price sample
-symbol = "BTCUSDT"
-price = client.get_symbol_ticker(symbol=symbol)
-print(f"{symbol} price:", price["price"])
+print("=== 1H Indicators ===")
+for sym in SYMBOLS:
+    df = fetch_klines(sym)
+    last, rsi, ma20, ma50 = indicators(df)
+    trend = "UP" if ma20 > ma50 else "DOWN"
+    print(f"{sym} | last={last:.6f} | RSI14={rsi:.2f} | MA20={ma20:.6f} | MA50={ma50:.6f} | trend={trend}")
