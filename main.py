@@ -1,8 +1,8 @@
 import os
 from binance.client import Client
 
-API_KEY = os.getenv("BINANCE_API_KEY", "lBo7XbDqrUfGWREDnqWfrITKcrKUhxgIkXS1HSTT4RgYgqpPEIUvbHQxCjGoPI4x")
-API_SECRET = os.getenv("BINANCE_API_SECRET", "hlaE0xJGxJLUF56ph9uE7T2ZvWPgIDsL1krO8LDxPLa9ZmI3bvHtCYQXWl90N7GE")
+API_KEY = os.getenv("BINANCE_API_KEY", "SQsCSkgq9cWG4LegcWWFyy4EJJ6OCupvAdPy0Rf8m9PBKiVjK8TuAeVw9NCFjUHm")
+API_SECRET = os.getenv("BINANCE_API_SECRET", "aUzQZ6QXyoabLLWoRwK0pormrcf5xJljYZOp9j8mDrFZOcoH5d6SSWHMpVtEJv4O")
 TESTNET = os.getenv("BINANCE_TESTNET", "true").lower() == "true"
 
 if not API_KEY or not API_SECRET:
