@@ -9,7 +9,7 @@ API_KEY = (os.getenv("BINANCE_API_KEY") or "lBo7XbDqrUfGWREDnqWfrITKcrKUhxgIkXS1
 API_SECRET = (os.getenv("BINANCE_API_SECRET") or "hlaE0xJGxJLUF56ph9uE7T2ZvWPgIDsL1krO8LDxPLa9ZmI3bvHtCYQXWl90N7GE").strip()
 TESTNET = (os.getenv("BINANCE_TESTNET", "false").strip().lower() == "true")
 
-TRADE_MODE = (os.getenv("TRADE_MODE", "false").strip().lower() == "true")
+TRADE_MODE = (os.getenv("TRADE_MODE", "true").strip().lower() == "true")
 USDT_PER_TRADE = float(os.getenv("USDT_PER_TRADE", "20").strip())
 MAX_OPEN = int(os.getenv("MAX_OPEN_POSITIONS", "5").strip())
 
